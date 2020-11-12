@@ -10,21 +10,17 @@ import (
 )
 
 type Recipe struct {
+	Slug        string `json:"slug"`
 	Title       string `json:"Title"`
 	Ingredients string `json:"Ingredients"`
 	Directions  string `json:"Directions"`
 }
 
-type Recipes []Recipe
+var Recipes []Recipe
 
 func allRecipes(w http.ResponseWriter, r *http.Request) {
-	recipes := Recipes{
-		Recipe{Title: "really bad cookies", Ingredients: "flour, eggs, milk, sugar", Directions: "combine all the things and bake"},
-		Recipe{Title: "ham", Ingredients: "ham", Directions: "just cut a slice and eat it"},
-	}
-
 	fmt.Println("endpoint hit:: all Recipes")
-	json.NewEncoder(w).Encode(recipes)
+	json.NewEncoder(w).Encode(Recipes)
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
@@ -40,5 +36,11 @@ func handleRequests() {
 
 func main() {
 	fmt.Println("GO Rest API")
+
+	Recipes = []Recipe{
+		Recipe{Slug: "cookies", Title: "really bad cookies", Ingredients: "flour, eggs, milk, sugar", Directions: "combine all the things and bake"},
+		Recipe{Slug: "ham", Title: "ham", Ingredients: "ham", Directions: "just cut a slice and eat it"},
+	}
+
 	handleRequests()
 }
