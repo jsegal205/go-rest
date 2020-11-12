@@ -23,6 +23,22 @@ func allRecipes(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(Recipes)
 }
 
+func singleRecipe(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	slug := vars["slug"]
+
+	fmt.Println("endpoint hit:: single Recipe for " + slug)
+
+	for _, recipe := range Recipes {
+		if recipe.Slug == slug {
+			json.NewEncoder(w).Encode(recipe)
+			return
+		}
+	}
+
+	fmt.Fprintf(w, "404 Recipe not found for "+slug)
+}
+
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello jimbo jellybeans")
 }
@@ -31,6 +47,7 @@ func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/recipes", allRecipes)
+	myRouter.HandleFunc("/recipe/{slug}", singleRecipe)
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 
