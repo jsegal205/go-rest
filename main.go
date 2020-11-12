@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type Recipe struct {
@@ -30,11 +32,13 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 }
 
 func handleRequests() {
-	http.HandleFunc("/", homePage)
-	http.HandleFunc("/recipes", allRecipes)
-	log.Fatal(http.ListenAndServe(":8081", nil))
+	myRouter := mux.NewRouter().StrictSlash(true)
+	myRouter.HandleFunc("/", homePage)
+	myRouter.HandleFunc("/recipes", allRecipes)
+	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
 
 func main() {
+	fmt.Println("GO Rest API")
 	handleRequests()
 }
