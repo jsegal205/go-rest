@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -39,6 +40,22 @@ func singleRecipe(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "404 Recipe not found for "+slug)
 }
 
+func createRecipe(w http.ResponseWriter, r *http.Request) {
+	// post in postman with
+	//{"slug": "popcorn", "title": "popcorn", "ingredients": "corn kernels", "directions": "cook over open flame until cooked"}
+
+	reqBody, _ := ioutil.ReadAll(r.Body)
+
+	fmt.Println("endpoint hit:: create Recipe with " + string(reqBody))
+
+	var newRecipe Recipe
+	json.Unmarshal(reqBody, &newRecipe)
+
+	Recipes = append(Recipes, newRecipe)
+
+	json.NewEncoder(w).Encode(newRecipe)
+}
+
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello jimbo jellybeans")
 }
@@ -47,6 +64,7 @@ func handleRequests() {
 	myRouter := mux.NewRouter().StrictSlash(true)
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/recipes", allRecipes)
+	myRouter.HandleFunc("/recipe", createRecipe).Methods("POST")
 	myRouter.HandleFunc("/recipe/{slug}", singleRecipe)
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
