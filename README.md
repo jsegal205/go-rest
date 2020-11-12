@@ -8,4 +8,18 @@ A small little webserver written in Go to learn about Go.
 go run main.go
 ```
 
-Then navigate to [http://localhost:8081](http://localhost:8081)
+## Available Routes
+
+- [GET /](http://localhost:8081)
+- [GET /recipes](http://localhost:8081/recipes)
+- [GET /recipe/{slug}](http://localhost:8081/recipes/ham)
+- POST /recipe
+  - sample request body
+  ```json
+  {
+    "slug": "popcorn",
+    "title": "popcorn",
+    "ingredients": "corn kernels",
+    "directions": "cook over open flame until cooked"
+  }
+  ```
