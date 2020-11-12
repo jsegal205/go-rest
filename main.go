@@ -41,12 +41,13 @@ func singleRecipe(w http.ResponseWriter, r *http.Request) {
 }
 
 func createRecipe(w http.ResponseWriter, r *http.Request) {
-	// post in postman with
-	//{"slug": "popcorn", "title": "popcorn", "ingredients": "corn kernels", "directions": "cook over open flame until cooked"}
-
 	reqBody, _ := ioutil.ReadAll(r.Body)
-
 	fmt.Println("endpoint hit:: create Recipe with " + string(reqBody))
+
+	// TODO ::
+	// add logic to disallow slug duplication
+	// add required field logic
+	// add auth logic
 
 	var newRecipe Recipe
 	json.Unmarshal(reqBody, &newRecipe)
@@ -59,11 +60,16 @@ func createRecipe(w http.ResponseWriter, r *http.Request) {
 func deleteRecipe(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["slug"]
-
 	fmt.Println("endpoint hit:: delete Recipe for " + slug)
+
+	// TODO ::
+	// add auth logic
 
 	for index, recipe := range Recipes {
 		if recipe.Slug == slug {
+			// I understand this takes all the recipes up until the index and appends
+			// with the all elements after the index. I believe the `...` means all the
+			// rest of the elements
 			Recipes = append(Recipes[:index], Recipes[index+1:]...)
 			return
 		}
@@ -74,6 +80,11 @@ func updateRecipe(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["slug"]
 	fmt.Println("endpoint hit:: update Recipe for " + slug)
+
+	// TODO ::
+	// add logic to disallow slug being changed
+	// add logic for required fields being there if updating to nil
+	// add auth logic
 
 	for index, recipe := range Recipes {
 		if recipe.Slug == slug {
@@ -106,6 +117,8 @@ func handleRequests() {
 func main() {
 	fmt.Println("GO Rest API")
 
+	// This global `Recipes` mimics data from a database without all the hassle of
+	// setting up a database
 	Recipes = []Recipe{
 		Recipe{Slug: "cookies", Title: "really bad cookies", Ingredients: "flour, eggs, milk, sugar", Directions: "combine all the things and bake"},
 		Recipe{Slug: "ham", Title: "ham", Ingredients: "ham", Directions: "just cut a slice and eat it"},
