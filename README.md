@@ -24,3 +24,13 @@ go run main.go
   }
   ```
 - DELETE /recipe/{slug}
+- PUT /recipe/{slug}
+  - sample request body
+  ```json
+  {
+    "slug": "ham",
+    "title": "moar ham",
+    "ingredients": "hammier ham",
+    "directions": "just eat"
+  }
+  ```

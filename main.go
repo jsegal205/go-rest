@@ -70,6 +70,24 @@ func deleteRecipe(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func updateRecipe(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	slug := vars["slug"]
+	fmt.Println("endpoint hit:: update Recipe for " + slug)
+
+	for index, recipe := range Recipes {
+		if recipe.Slug == slug {
+			reqBody, _ := ioutil.ReadAll(r.Body)
+			var updatedRecipe Recipe
+			json.Unmarshal(reqBody, &updatedRecipe)
+			Recipes[index] = updatedRecipe
+			return
+		}
+	}
+
+	fmt.Fprintf(w, "404 Recipe not found for "+slug)
+}
+
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello jimbo jellybeans")
 }
@@ -80,6 +98,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/recipes", allRecipes)
 	myRouter.HandleFunc("/recipe", createRecipe).Methods("POST")
 	myRouter.HandleFunc("/recipe/{slug}", deleteRecipe).Methods("DELETE")
+	myRouter.HandleFunc("/recipe/{slug}", updateRecipe).Methods("PUT")
 	myRouter.HandleFunc("/recipe/{slug}", singleRecipe)
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }
