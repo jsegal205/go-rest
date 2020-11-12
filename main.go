@@ -56,6 +56,20 @@ func createRecipe(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(newRecipe)
 }
 
+func deleteRecipe(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	slug := vars["slug"]
+
+	fmt.Println("endpoint hit:: delete Recipe for " + slug)
+
+	for index, recipe := range Recipes {
+		if recipe.Slug == slug {
+			Recipes = append(Recipes[:index], Recipes[index+1:]...)
+			return
+		}
+	}
+}
+
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Hello jimbo jellybeans")
 }
@@ -65,6 +79,7 @@ func handleRequests() {
 	myRouter.HandleFunc("/", homePage)
 	myRouter.HandleFunc("/recipes", allRecipes)
 	myRouter.HandleFunc("/recipe", createRecipe).Methods("POST")
+	myRouter.HandleFunc("/recipe/{slug}", deleteRecipe).Methods("DELETE")
 	myRouter.HandleFunc("/recipe/{slug}", singleRecipe)
 	log.Fatal(http.ListenAndServe(":8081", myRouter))
 }

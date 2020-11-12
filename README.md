@@ -23,3 +23,4 @@ go run main.go
     "directions": "cook over open flame until cooked"
   }
   ```
+- DELETE /recipe/{slug}
